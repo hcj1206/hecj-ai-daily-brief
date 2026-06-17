@@ -160,62 +160,196 @@ class WeChatPublisher:
 
     def _format_article_html(self, brief: BriefResult, date_str: str) -> str:
         """Convert the brief summary into WeChat-compatible HTML."""
+        import re
         lines = brief.summary_text.strip().split("\n")
 
         html_parts = [
             '<section style="padding: 10px 0;">',
             f'<h2 style="text-align: center; font-size: 18px; color: #333;">📡 AI 工具日报</h2>',
             f'<p style="text-align: center; color: #999; font-size: 14px; margin-bottom: 20px;">{date_str}</p>',
+            f'<p style="text-align: center; color: #999; font-size: 13px; margin-bottom: 16px;">'
+            f'共收录 {brief.raw_count} 条资讯</p>',
             '<hr style="border: none; border-top: 1px solid #eee;">',
+            '<p style="font-size: 14px; color: #666; margin: 12px 0 16px;">👇 全部资讯</p>',
         ]
 
-        for line in lines:
-            line = line.strip()
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
             if not line:
-                html_parts.append("<br>")
+                i += 1
                 continue
 
             # Section headers (e.g., "### xxx")
             if line.startswith("###"):
                 html_parts.append(
                     f'<h3 style="font-size: 16px; color: #07c160; '
-                    f'margin: 15px 0 10px;">{line.lstrip("#").strip()}</h3>'
+                    f'margin: 18px 0 10px;">{line.lstrip("#").strip()}</h3>'
                 )
+                i += 1
+                continue
+
             # Horizontal rule
-            elif line.startswith("---"):
+            if line.startswith("---"):
                 html_parts.append(
-                    '<hr style="border: none; border-top: 1px solid #ddd; '
-                    'margin: 15px 0;">'
+                    '<hr style="border: none; border-top: 1px solid #e5e5e5; '
+                    'margin: 16px 0;">'
                 )
-            # Bold trend summary
-            elif line.startswith("**") and line.endswith("**"):
+                i += 1
+                continue
+
+            # Numbered item line (e.g. "1. Title [Source]")
+            # The next line may be a description
+            numbered_match = re.match(r'^\d+[\.\、]\s*(.+)
+
+    @staticmethod
+    def _make_png(width: int, height: int, r: int, g: int, b: int) -> bytes:
+        """Create a minimal solid-color PNG image using only built-in modules.
+
+        This generates a valid PNG with IHDR, IDAT, and IEND chunks.
+        The image is a solid rectangle with the given RGB color.
+        """
+        def _chunk(chunk_type: bytes, data: bytes) -> bytes:
+            c = chunk_type + data
+            crc = struct.pack(">I", zlib.crc32(c) & 0xFFFFFFFF)
+            return struct.pack(">I", len(data)) + c + crc
+
+        # PNG signature
+        sig = b'\x89PNG\r\n\x1a\n'
+
+        # IHDR: width, height, bit_depth=8, color_type=2 (RGB),
+        #       compression=0, filter=0, interlace=0
+        ihdr_data = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
+        ihdr = _chunk(b'IHDR', ihdr_data)
+
+        # IDAT: raw pixel data (filter byte 0 + RGB pixels per row)
+        raw = b''
+        row = b'\x00' + bytes([r, g, b]) * width
+        for _ in range(height):
+            raw += row
+        idat = _chunk(b'IDAT', zlib.compress(raw))
+
+        iend = _chunk(b'IEND', b'')
+
+        return sig + ihdr + idat + iend
+, line)
+            if numbered_match:
+                item_text = numbered_match.group(1)
+
+                # Extract source tag [xxx]
+                source_tag = ""
+                tag_match = re.search(r'\[([^\]]+)\]', item_text)
+                if tag_match:
+                    source_tag = tag_match.group(1)
+                    # Remove the [tag] from the text
+                    item_text = re.sub(r'\s*\[([^\]]+)\]', '', item_text)
+
+                # Look ahead for a description line (starts with "一句话简介" or is indented)
+                desc_text = ""
+                if i + 1 < len(lines):
+                    next_line = lines[i + 1].strip()
+                    desc_match = re.match(r'(?:一句话简介[：:]\s*|简介[：:]\s*|)(.+)
+
+    @staticmethod
+    def _make_png(width: int, height: int, r: int, g: int, b: int) -> bytes:
+        """Create a minimal solid-color PNG image using only built-in modules.
+
+        This generates a valid PNG with IHDR, IDAT, and IEND chunks.
+        The image is a solid rectangle with the given RGB color.
+        """
+        def _chunk(chunk_type: bytes, data: bytes) -> bytes:
+            c = chunk_type + data
+            crc = struct.pack(">I", zlib.crc32(c) & 0xFFFFFFFF)
+            return struct.pack(">I", len(data)) + c + crc
+
+        # PNG signature
+        sig = b'\x89PNG\r\n\x1a\n'
+
+        # IHDR: width, height, bit_depth=8, color_type=2 (RGB),
+        #       compression=0, filter=0, interlace=0
+        ihdr_data = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
+        ihdr = _chunk(b'IHDR', ihdr_data)
+
+        # IDAT: raw pixel data (filter byte 0 + RGB pixels per row)
+        raw = b''
+        row = b'\x00' + bytes([r, g, b]) * width
+        for _ in range(height):
+            raw += row
+        idat = _chunk(b'IDAT', zlib.compress(raw))
+
+        iend = _chunk(b'IEND', b'')
+
+        return sig + ihdr + idat + iend
+, next_line)
+                    if desc_match and not next_line.startswith("###") and not next_line.startswith("---"):
+                        desc_text = desc_match.group(1)
+                        i += 1  # consume the description line
+
+                # Render item block
+                item_html = (
+                    f'<div style="margin: 12px 0; padding: 10px 14px; '
+                    f'background: #fafafa; border-radius: 8px; '
+                    f'border-left: 3px solid #07c160;">'
+                    f'<div style="font-weight: 500; color: #1a1a1a; font-size: 15px; line-height: 1.6;">'
+                    f'{item_text}'
+                )
+                if source_tag:
+                    item_html += (
+                        f'<span style="display: inline-block; color: #07c160; font-size: 11px; '
+                        f'background: #e8f8ee; padding: 1px 8px; border-radius: 3px; '
+                        f'margin-left: 6px; font-weight: 400;">{source_tag}</span>'
+                    )
+                item_html += '</div>'
+                if desc_text:
+                    item_html += (
+                        f'<div style="font-size: 13px; color: #888; line-height: 1.6; '
+                        f'margin-top: 4px; padding-left: 4px;">{desc_text}</div>'
+                    )
+                item_html += '</div>'
+                html_parts.append(item_html)
+                i += 1
+                continue
+
+            # Bold text (trend summary)
+            if line.startswith("**") and "**" in line[2:]:
+                clean = line.replace("**", "")
                 html_parts.append(
-                    f'<p style="font-weight: bold; color: #333; '
-                    f'font-size: 15px; margin: 10px 0;">{line.strip("*")}</p>'
+                    f'<p style="font-weight: 600; color: #1a1a1a; '
+                    f'font-size: 15px; margin: 14px 0 8px;">{clean}</p>'
                 )
-            # Source tags like [Hacker News]
-            elif "[" in line and "]" in line:
-                # Wrap source tags in colored spans
-                formatted = line
-                import re
+                i += 1
+                continue
+
+            # Lines with source tags
+            if "[" in line and "]" in line:
                 formatted = re.sub(
                     r'\[([^\]]+)\]',
                     r'<span style="color: #07c160; font-size: 12px;'
                     r' background: #f0faf0; padding: 1px 6px;'
                     r' border-radius: 3px;">[\1]</span>',
-                    formatted,
+                    line,
                 )
                 html_parts.append(
                     f'<p style="font-size: 15px; line-height: 1.8; '
                     f'margin: 6px 0;">{formatted}</p>'
                 )
-            else:
-                html_parts.append(
-                    f'<p style="font-size: 15px; line-height: 1.8; '
-                    f'margin: 6px 0;">{line}</p>'
-                )
+                i += 1
+                continue
 
-        html_parts.append("</section>")
+            # Regular paragraph
+            html_parts.append(
+                f'<p style="font-size: 15px; line-height: 1.8; '
+                f'margin: 6px 0;">{line}</p>'
+            )
+            i += 1
+
+        # Footer
+        html_parts.extend([
+            '<hr style="border: none; border-top: 1px solid #e5e5e5; margin: 16px 0;">',
+            f'<p style="font-size: 13px; color: #999; text-align: center;">'
+            f'共收录 {brief.raw_count} 条资讯</p>',
+            '</section>',
+        ])
         return "\n".join(html_parts)
 
     @staticmethod

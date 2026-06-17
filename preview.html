@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Daily Brief 预览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    padding: 30px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  .phone {
+    width: 390px;
+    background: #fff;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .status-bar {
+    background: #fff;
+    padding: 12px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+  .status-bar .time { font-weight: 700; }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 0.5px solid #e5e5e5;
+  }
+  .nav-bar .back { font-size: 20px; color: #576b95; cursor: pointer; width: 36px; }
+  .nav-bar .title { flex: 1; text-align: center; font-size: 16px; font-weight: 500; color: #1a1a1a; }
+  .nav-bar .more { font-size: 18px; color: #576b95; cursor: pointer; width: 36px; text-align: right; }
+
+  .account-header {
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    padding: 20px 24px 16px;
+    color: #fff;
+  }
+  .account-header .account-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .account-header .account-desc { font-size: 12px; opacity: 0.85; }
+
+  .article { padding: 20px 24px 30px; }
+  .article-title {
+    font-size: 20px; font-weight: 600; color: #1a1a1a;
+    line-height: 1.5; margin-bottom: 8px;
+  }
+  .article-meta {
+    font-size: 13px; color: #999;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px; padding-bottom: 16px;
+    border-bottom: 0.5px solid #eee;
+  }
+  .article-meta .author { color: #576b95; }
+
+  .article-body { font-size: 15px; line-height: 1.8; color: #333; }
+  .article-body p { margin: 6px 0; }
+
+  .section-title {
+    font-size: 16px; font-weight: 600; color: #07c160;
+    margin: 20px 0 12px; padding-bottom: 6px;
+    border-bottom: 2px solid #07c160;
+    display: inline-block;
+  }
+
+  .item-block {
+    margin: 14px 0;
+    padding: 12px 14px;
+    background: #fafafa;
+    border-radius: 8px;
+    border-left: 3px solid #07c160;
+  }
+  .item-block .item-title {
+    font-weight: 500;
+    color: #1a1a1a;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .item-block .item-title .num {
+    color: #07c160;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .item-block .item-desc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+    margin-top: 4px;
+    padding-left: 22px;
+  }
+  .source-tag {
+    display: inline-block;
+    color: #07c160;
+    font-size: 11px;
+    background: #e8f8ee;
+    padding: 1px 8px;
+    border-radius: 3px;
+    margin-left: 4px;
+    font-weight: 400;
+  }
+
+  .article-body hr {
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    margin: 18px 0;
+  }
+  .divider-text {
+    text-align: center;
+    color: #07c160;
+    font-size: 13px;
+    margin: 16px 0;
+    letter-spacing: 4px;
+  }
+  .trend-summary {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 15px;
+    margin: 12px 0;
+  }
+  .trend-text {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
+    background: #f9fdf9;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border-left: 3px solid #07c160;
+  }
+  .stats-line {
+    font-size: 13px;
+    color: #999;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .article-footer {
+    padding: 0 24px 20px;
+    text-align: center;
+  }
+  .article-footer .footer-line {
+    width: 40px; height: 3px;
+    background: #07c160; border-radius: 2px;
+    margin: 0 auto 12px;
+  }
+  .article-footer .footer-text { font-size: 12px; color: #b2b2b2; }
+  .article-footer .footer-stats { font-size: 12px; color: #b2b2b2; margin-top: 4px; }
+
+  .bottom-bar {
+    display: flex; justify-content: space-around;
+    align-items: center; padding: 10px 0;
+    border-top: 0.5px solid #e5e5e5; background: #fff;
+  }
+  .bottom-bar .action {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+    font-size: 10px; color: #999; cursor: pointer;
+  }
+  .bottom-bar .action .icon { font-size: 20px; }
+
+  .note {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: #fffbe6; border: 1px solid #ffe58f;
+    border-radius: 8px; font-size: 13px; color: #8c6e00;
+    max-width: 390px;
+  }
+  .note strong { color: #d48806; }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="phone">
+    <div class="status-bar">
+      <span class="time">9:41</span>
+      <span class="status-icons">📶 📶 🔋</span>
+    </div>
+    <div class="nav-bar">
+      <span class="back">‹</span>
+      <span class="title">AI Daily Brief</span>
+      <span class="more">⋯</span>
+    </div>
+    <div class="account-header">
+      <div class="account-name">AI Daily Brief · 每日 AI 工具日报</div>
+      <div class="account-desc">📡 每天 9:00 自动推送最新 AI 工具资讯</div>
+    </div>
+
+    <div class="article">
+      <div class="article-title">📡 AI 工具日报 · 2025-06-17</div>
+      <div class="article-meta">
+        <span class="author">AI Daily Brief</span>
+        <span>·</span>
+        <span>2025-06-17</span>
+      </div>
+
+      <div class="article-body">
+
+        <p style="color: #666; font-size: 14px; margin-bottom: 12px;">今日共收录 35 条资讯 👇</p>
+
+        <div class="section-title">🔥 全部资讯</div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">1.</span> Wolfram 发布 Mathematica 15<span class="source-tag">Hacker News</span></div>
+          <div class="item-desc">新版集成 AI 编程助手与符号音乐功能，可自然语言描述生成乐谱</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">2.</span> GPT-NL：荷兰自主主权语言模型发布<span class="source-tag">Hacker News</span></div>
+          <div class="item-desc">专为荷兰语打造的开放大语言模型，强调数据主权与文化保护</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">3.</span> MotionVLA：视觉-语言-动作模型<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">从图像和文本描述生成逼真的人体动作，可用于动画与机器人</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">4.</span> LoopCoder-v2：高效测试时计算扩展<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">仅通过一次循环即可实现测试时计算扩展，大幅提升推理效率</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">5.</span> 光谱强制去噪方法<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">在像素空间扩散模型中引入光谱约束，显著提升图像生成质量</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">6.</span> ACE-Ego-0：统一人机数据预训练<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">融合第一人称人类与机器人数据训练视觉-语言-动作模型</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">7.</span> 可变宽度 Transformer 架构<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">不增加模型深度即可扩展容量，为高效大模型提供新思路</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">8.</span> ProCUA-SFT：计算机使用智能体<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">技术报告详述如何训练能够自主操作计算机界面的 AI 智能体</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">9.</span> GameCraft-Bench 游戏 AI 基准<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">评估 AI 智能体在真实游戏引擎中端到端构建可玩游戏的能力</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">10.</span> 近端策略优化区域：知识蒸馏新方法<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">通过提示而非梯度下降实现知识蒸馏，大幅降低训练成本</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">11.</span> 阿里 zvec：轻量级向量数据库<span class="source-tag">GitHub Trending</span></div>
+          <div class="item-desc">阿里巴巴开源的内存向量数据库，主打极速查询与轻量部署</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">12.</span> 循环世界模型：长时模拟新方法<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">在保证仿真保真度的同时，优化长时间序列预测的计算效率</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">13.</span> 获胜者优势策略优化 (WAPO)<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">基于可验证奖励的强化学习新方法，显著提升训练稳定性</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">14.</span> TRIAGE：医疗时间序列可解释预测<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">利用辩证推理对不规则采样的医疗数据进行风险预测与解释</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">15.</span> 策略蒸馏进化器：培养自我进化能力<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">通过策略蒸馏使智能体具备自我进化能力，无需人工干预</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">16.</span> 动作感知记忆：可交互世界模型<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">构建具备动作感知记忆机制的世界模型，支持实时交互反馈</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">17.</span> 跨语言深度研究基准 (X-DRB)<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">评估 AI 智能体与检索系统的跨语言信息处理能力</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">18.</span> ChLogic：中文逻辑推理鲁棒性基准<span class="source-tag">Hugging Face</span></div>
+          <div class="item-desc">评估大模型在中文语境下逻辑推理能力的标准化测试集</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">19.</span> 哪吒监控面板 v2 发布<span class="source-tag">少数派</span></div>
+          <div class="item-desc">开源服务器监控工具重大更新，支持更多可视化与告警功能</div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-title"><span class="num">20.</span> Arc Browser 新增 AI 摘要功能<span class="source-tag">少数派</span></div>
+          <div class="item-desc">浏览器内置 AI 助手，可自动总结当前页面的核心内容</div>
+        </div>
+
+        <p style="margin-top:6px;">
+          <span style="display:inline-block;padding:4px 14px;background:#f0faf0;color:#07c160;border-radius:12px;font-size:13px;font-weight:500;">还有 15 条 ›</span>
+        </p>
+
+        <p style="text-align:center;color:#ccc;font-size:13px;margin:6px 0;">⋮ ⋮ ⋮</p>
+
+        <hr>
+
+        <div class="divider-text">✦ ✦ ✦</div>
+
+        <p class="trend-summary">📊 今日趋势总结</p>
+        <div class="trend-text">
+          模型架构与训练方法持续创新，世界模型、智能体与推理能力成为研究焦点。
+          轻量级工具（zvec 向量数据库）与应用生态也在蓬勃发展，开源社区活跃度持续走高。
+        </div>
+
+        <hr>
+
+        <p class="stats-line">共收录 35 条资讯 · 来自 4 个数据源</p>
+        <p class="stats-line" style="font-size:11px;margin-top:2px;">
+          Hacker News 8 · Hugging Face 15 · GitHub Trending 4 · 少数派 10
+        </p>
+
+      </div>
+    </div>
+
+    <div class="article-footer">
+      <div class="footer-line"></div>
+      <div class="footer-text">AI Daily Brief</div>
+      <div class="footer-stats">阅读 0 &nbsp;·&nbsp; 赞 0 &nbsp;·&nbsp; 在看 0</div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="action"><span class="icon">💬</span> 留言</div>
+      <div class="action"><span class="icon">❤️</span> 赞</div>
+      <div class="action"><span class="icon">⭐</span> 在看</div>
+      <div class="action"><span class="icon">📤</span> 分享</div>
+    </div>
+  </div>
+
+  <div class="note">
+    💡 <strong>这就是每天自动生成到公众号草稿箱的样式</strong><br>
+    每条资讯包含标题 + 一句话简介，右侧有绿色来源标签。
+    全部 35 条都会展示。打开 mp.weixin.qq.com → 草稿箱 → 点"发布"即可。
+  </div>
+</div>
+
+</body>
+</html>
