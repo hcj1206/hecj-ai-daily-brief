@@ -6,3 +6,8 @@ venv/
 env/
 *.log
 .DS_Store
+*.zip
+0_*.txt
+build/
+logs*.zip
+*.html
