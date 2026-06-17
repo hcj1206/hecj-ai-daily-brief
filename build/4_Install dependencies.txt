@@ -1,0 +1,59 @@
+﻿2026-06-17T06:19:21.7312629Z ##[group]Run pip install -r requirements.txt
+2026-06-17T06:19:21.7314260Z [36;1mpip install -r requirements.txt[0m
+2026-06-17T06:19:21.7480695Z shell: /usr/bin/bash -e {0}
+2026-06-17T06:19:21.7481892Z env:
+2026-06-17T06:19:21.7546263Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-06-17T06:19:21.7549748Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+2026-06-17T06:19:21.7553106Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-06-17T06:19:21.7556028Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-06-17T06:19:21.7559310Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-06-17T06:19:21.7561954Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+2026-06-17T06:19:21.7563628Z ##[endgroup]
+2026-06-17T06:19:22.7563424Z Collecting requests>=2.31.0 (from -r requirements.txt (line 1))
+2026-06-17T06:19:22.8099032Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+2026-06-17T06:19:22.8278069Z Collecting feedparser>=6.0.11 (from -r requirements.txt (line 2))
+2026-06-17T06:19:22.8327706Z   Downloading feedparser-6.0.12-py3-none-any.whl.metadata (2.7 kB)
+2026-06-17T06:19:22.8557762Z Collecting beautifulsoup4>=4.12.2 (from -r requirements.txt (line 3))
+2026-06-17T06:19:22.8581925Z   Downloading beautifulsoup4-4.15.0-py3-none-any.whl.metadata (3.8 kB)
+2026-06-17T06:19:23.1605627Z Collecting lxml>=5.1.0 (from -r requirements.txt (line 4))
+2026-06-17T06:19:23.1648229Z   Downloading lxml-6.1.1-cp311-cp311-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+2026-06-17T06:19:23.2469758Z Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->-r requirements.txt (line 1))
+2026-06-17T06:19:23.2509327Z   Downloading charset_normalizer-3.4.7-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+2026-06-17T06:19:23.2729616Z Collecting idna<4,>=2.5 (from requests>=2.31.0->-r requirements.txt (line 1))
+2026-06-17T06:19:23.2761877Z   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
+2026-06-17T06:19:23.2948597Z Collecting urllib3<3,>=1.26 (from requests>=2.31.0->-r requirements.txt (line 1))
+2026-06-17T06:19:23.2981845Z   Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+2026-06-17T06:19:23.3137652Z Collecting certifi>=2023.5.7 (from requests>=2.31.0->-r requirements.txt (line 1))
+2026-06-17T06:19:23.3170481Z   Downloading certifi-2026.5.20-py3-none-any.whl.metadata (2.5 kB)
+2026-06-17T06:19:23.3283840Z Collecting sgmllib3k (from feedparser>=6.0.11->-r requirements.txt (line 2))
+2026-06-17T06:19:23.3317544Z   Downloading sgmllib3k-1.0.0.tar.gz (5.8 kB)
+2026-06-17T06:19:23.3375596Z   Installing build dependencies: started
+2026-06-17T06:19:24.0378523Z   Installing build dependencies: finished with status 'done'
+2026-06-17T06:19:24.0397922Z   Getting requirements to build wheel: started
+2026-06-17T06:19:24.4446791Z   Getting requirements to build wheel: finished with status 'done'
+2026-06-17T06:19:24.4455497Z   Preparing metadata (pyproject.toml): started
+2026-06-17T06:19:24.6150650Z   Preparing metadata (pyproject.toml): finished with status 'done'
+2026-06-17T06:19:24.6304808Z Collecting soupsieve>=1.6.1 (from beautifulsoup4>=4.12.2->-r requirements.txt (line 3))
+2026-06-17T06:19:24.6342785Z   Downloading soupsieve-2.8.4-py3-none-any.whl.metadata (4.6 kB)
+2026-06-17T06:19:24.6487495Z Collecting typing-extensions>=4.0.0 (from beautifulsoup4>=4.12.2->-r requirements.txt (line 3))
+2026-06-17T06:19:24.6520527Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+2026-06-17T06:19:24.6602259Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+2026-06-17T06:19:24.6680594Z Downloading charset_normalizer-3.4.7-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (214 kB)
+2026-06-17T06:19:24.6752997Z Downloading idna-3.18-py3-none-any.whl (65 kB)
+2026-06-17T06:19:24.6807697Z Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+2026-06-17T06:19:24.6862554Z Downloading feedparser-6.0.12-py3-none-any.whl (81 kB)
+2026-06-17T06:19:24.6918194Z Downloading beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+2026-06-17T06:19:24.6977539Z Downloading lxml-6.1.1-cp311-cp311-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+2026-06-17T06:19:24.7209213Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 258.8 MB/s  0:00:00
+2026-06-17T06:19:24.7242399Z Downloading certifi-2026.5.20-py3-none-any.whl (134 kB)
+2026-06-17T06:19:24.7297513Z Downloading soupsieve-2.8.4-py3-none-any.whl (37 kB)
+2026-06-17T06:19:24.7352079Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+2026-06-17T06:19:24.7511005Z Building wheels for collected packages: sgmllib3k
+2026-06-17T06:19:24.7519703Z   Building wheel for sgmllib3k (pyproject.toml): started
+2026-06-17T06:19:24.9598164Z   Building wheel for sgmllib3k (pyproject.toml): finished with status 'done'
+2026-06-17T06:19:24.9603800Z   Created wheel for sgmllib3k: filename=sgmllib3k-1.0.0-py3-none-any.whl size=6090 sha256=7cc562482f478eb0ae37bf1522d3b3a44b1eb39e5a3d6733fbba828c0703aa51
+2026-06-17T06:19:24.9605916Z   Stored in directory: /home/runner/.cache/pip/wheels/3b/25/2a/105d6a15df6914f4d15047691c6c28f9052cc1173e40285d03
+2026-06-17T06:19:24.9637703Z Successfully built sgmllib3k
+2026-06-17T06:19:24.9814155Z Installing collected packages: sgmllib3k, urllib3, typing-extensions, soupsieve, lxml, idna, feedparser, charset_normalizer, certifi, requests, beautifulsoup4
+2026-06-17T06:19:25.4347712Z 
+2026-06-17T06:19:25.4359146Z Successfully installed beautifulsoup4-4.15.0 certifi-2026.5.20 charset_normalizer-3.4.7 feedparser-6.0.12 idna-3.18 lxml-6.1.1 requests-2.34.2 sgmllib3k-1.0.0 soupsieve-2.8.4 typing-extensions-4.15.0 urllib3-2.7.0

@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import config
 from src.models import InfoItem
 from src.summarizer import Summarizer
-from src.pusher import Pusher
+from src.wechat_publisher import WeChatPublisher
 
 logging.basicConfig(
     level=logging.INFO,
@@ -93,10 +93,10 @@ def run():
     summarizer = Summarizer()
     brief = summarizer.summarize(unique_items)
 
-    # 4. Push to WeChat
-    pusher = Pusher()
-    success = pusher.push(brief)
-    logger.info("Push %s", "succeeded" if success else "failed")
+    # 4. Publish to WeChat Official Account as draft
+    publisher = WeChatPublisher()
+    success = publisher.publish(brief)
+    logger.info("WeChat publish %s", "succeeded" if success else "failed")
 
     # 5. Print brief to stdout (visible in GitHub Actions logs)
     if brief.summary_text:
