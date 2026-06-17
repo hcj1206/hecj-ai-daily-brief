@@ -31,7 +31,7 @@ class Config:
 
     # DeepSeek
     deepseek_model: str = "deepseek-chat"
-    deepseek_max_tokens: int = 1024
+    deepseek_max_tokens: int = 4096
     deepseek_temperature: float = 0.3
 
     # HTTP
