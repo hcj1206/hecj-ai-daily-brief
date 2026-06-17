@@ -46,4 +46,4 @@ class SSpaiFetcher(SourceFetcher):
     @staticmethod
     def _is_relevant(title: str, desc: str) -> bool:
         text = f"{title} {desc}".lower()
-        return any(k in text.lower() for k in RELEVANCE_KEYWORDS)
+        return any(k in text for k in RELEVANCE_KEYWORDS)

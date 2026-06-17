@@ -73,4 +73,4 @@ class GitHubTrendingFetcher(SourceFetcher):
     @staticmethod
     def _is_relevant(title: str, desc: str) -> bool:
         text = f"{title} {desc}".lower()
-        return any(kw in text.lower() for kw in RELEVANCE_KEYWORDS)
+        return any(kw in text for kw in RELEVANCE_KEYWORDS)

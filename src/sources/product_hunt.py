@@ -1,7 +1,7 @@
 """Fetcher for Product Hunt products, filtered by AI relevance."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -37,7 +37,7 @@ class ProductHuntFetcher(SourceFetcher):
             logger.info("[product_hunt] No API token configured, skipping")
             return items
 
-        yesterday = (datetime.utcnow() - timedelta(days=1)).strftime("%Y-%m-%d")
+        yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
         query = """
         {
           posts(order: VOTES, postedAfter: "%s", first: 20) {
