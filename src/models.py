@@ -1,7 +1,6 @@
 """Data models for the daily brief system."""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 
 
 @dataclass
