@@ -10,12 +10,6 @@ class Config:
     deepseek_api_key: str = field(
         default_factory=lambda: os.environ.get("DEEPSEEK_API_KEY", "")
     )
-    wxpusher_token: str = field(
-        default_factory=lambda: os.environ.get("WXPUSHER_TOKEN", "")
-    )
-    wxpusher_uid: str = field(
-        default_factory=lambda: os.environ.get("WXPUSHER_UID", "")
-    )
 
     # Product Hunt
     product_hunt_token: str = field(
@@ -39,18 +33,6 @@ class Config:
     deepseek_model: str = "deepseek-chat"
     deepseek_max_tokens: int = 1024
     deepseek_temperature: float = 0.3
-
-    # WeChat Official Account
-    wechat_app_id: str = field(
-        default_factory=lambda: os.environ.get("WECHAT_APP_ID", "")
-    )
-    wechat_app_secret: str = field(
-        default_factory=lambda: os.environ.get("WECHAT_APP_SECRET", "")
-    )
-    wechat_article_author: str = "AI Daily Brief"
-
-    # WxPusher (fallback notification)
-    wxpusher_api_url: str = "https://wxpusher.zjiecode.com/api/send/message"
 
     # HTTP
     request_timeout: int = 15

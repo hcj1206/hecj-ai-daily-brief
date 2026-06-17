@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """AI Daily Brief — Main entry point.
 
-Orchestrates: fetch from all sources → summarize → push to WeChat.
+Orchestrates: fetch from all sources -> summarize -> generate HTML page.
 """
 
 import logging
 import sys
+import os
 from datetime import datetime, timezone, timedelta
-
-# Ensure the project root is on sys.path so config can be imported
 from pathlib import Path
+
+# Ensure project root is on sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from config import config
 from src.models import InfoItem
 from src.summarizer import Summarizer
-from src.wechat_publisher import WeChatPublisher
+from src.html_generator import generate_html
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,6 +26,9 @@ logging.basicConfig(
 logger = logging.getLogger("main")
 
 CST = timezone(timedelta(hours=8))
+
+# Output directory for the HTML page (GitHub Pages default artifact dir)
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "_site"
 
 
 def get_enabled_fetchers() -> list:
@@ -59,8 +63,8 @@ def get_enabled_fetchers() -> list:
     return fetchers
 
 
-def run():
-    """Main pipeline: fetch → dedup → summarize → push."""
+def run() -> bool:
+    """Main pipeline: fetch -> dedup -> summarize -> generate HTML."""
     now = datetime.now(CST).strftime("%Y-%m-%d %H:%M:%S")
     logger.info("AI Daily Brief started at %s", now)
 
@@ -73,10 +77,10 @@ def run():
         logger.info("Fetching from %s...", fetcher.source_name)
         try:
             items = fetcher.fetch()
-            logger.info("  → got %d items", len(items))
+            logger.info("  -> got %d items", len(items))
             all_items.extend(items)
         except Exception as e:
-            logger.error("  → error from %s: %s", fetcher.source_name, e)
+            logger.error("  -> error from %s: %s", fetcher.source_name, e)
 
     # 2. Deduplicate by title, sort by score descending
     seen_titles = set()
@@ -93,10 +97,12 @@ def run():
     summarizer = Summarizer()
     brief = summarizer.summarize(unique_items)
 
-    # 4. Publish to WeChat Official Account as draft
-    publisher = WeChatPublisher()
-    success = publisher.publish(brief)
-    logger.info("WeChat publish %s", "succeeded" if success else "failed")
+    # 4. Generate HTML page
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    html = generate_html(brief)
+    output_path = OUTPUT_DIR / "index.html"
+    output_path.write_text(html, encoding="utf-8")
+    logger.info("HTML written to %s (%d bytes)", output_path, len(html))
 
     # 5. Print brief to stdout (visible in GitHub Actions logs)
     if brief.summary_text:
@@ -106,7 +112,7 @@ def run():
         print(brief.summary_text)
         print("=" * 40)
 
-    return success
+    return True
 
 
 if __name__ == "__main__":
